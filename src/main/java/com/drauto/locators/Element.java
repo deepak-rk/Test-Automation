@@ -2,6 +2,8 @@ package com.drauto.locators;
 
 import org.openqa.selenium.By;
 
+import com.drauto.utilities.Interactions;
+
 /**
  * Wrapper Class over {@link By}
  * 
@@ -10,18 +12,14 @@ import org.openqa.selenium.By;
  */
 public class Element {
 
-    public static final long DEFAULT_TIMEOUT_IN_MILLISECONDS = 5000;
     private final By by;
     private final String name;
     private long timeout;
 
     /**
-     * @param by
-     *            locator value
-     * @param name
-     *            identifier for element
-     * @param timeout
-     *            timeout interval in milliseconds
+     * @param by      locator value
+     * @param name    identifier for element
+     * @param timeout timeout interval in milliseconds
      */
     public Element(By by, String name, long timeout) {
         this.by = by;
@@ -30,13 +28,11 @@ public class Element {
     }
 
     /**
-     * @param by
-     *            locator value
-     * @param name
-     *            identifier for element
+     * @param by   locator value
+     * @param name identifier for element
      */
     public Element(By by, String name) {
-        this(by, name, DEFAULT_TIMEOUT_IN_MILLISECONDS);
+        this(by, name, Interactions.DEFAULT_TIMEOUT_IN_MILLISECONDS);
     }
 
     public By getBy() {
