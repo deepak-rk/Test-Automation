@@ -1,5 +1,6 @@
 package com.drauto.bussinesslogic;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import com.drauto.locators.Element;
@@ -21,14 +22,16 @@ public class PageUtilities {
     public PageUtilities(WebDriver driver, String name) {
         this.interactions = new Interactions(driver);
         this.jsonElementReader = new JSONElementReader(
-                System.getProperty("user.dir")
-                        + "\\src\\test\\resources\\assignment\\locators\\"
-                        + name + ".json");
+                System.getProperty("user.dir") + "/src/test/resources/assignment/locators/" + name + ".json");
+    }
+
+    public PageUtilities(WebDriver driver, String name, By by) {
+        this(driver, name);
+        interactions.setLoading(by);
     }
 
     /**
-     * @param elementName
-     *            reference name in the json
+     * @param elementName reference name in the json
      * 
      * @return element from the Object repository
      */
@@ -38,10 +41,8 @@ public class PageUtilities {
     }
 
     /**
-     * @param elementName
-     *            reference name in the json
-     * @param param
-     *            parameters within the expression
+     * @param elementName reference name in the json
+     * @param param       parameters within the expression
      * @return parameterized element from the Object repository
      */
     protected Element readElement(String elementName, Object... param) {
