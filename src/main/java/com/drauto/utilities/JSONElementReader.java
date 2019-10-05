@@ -1,12 +1,6 @@
 package com.drauto.utilities;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,32 +16,17 @@ import com.drauto.locators.Element;
  *
  */
 public class JSONElementReader {
-    private static final Logger log = LoggerFactory
-            .getLogger(JSONElementReader.class);
+    private static final Logger log = LoggerFactory.getLogger(JSONElementReader.class);
 
     private JSONObject jsonObject;
-    private JSONParser jsonParser;
 
     public JSONElementReader(String jsonPath) {
-        jsonParser = new JSONParser();
-        jsonObject = null;
+        jsonObject = JsonUtilities.readJSONObject(jsonPath);
 
-        try {
-            jsonObject = (JSONObject) jsonParser
-                    .parse(new FileReader(jsonPath));
-
-        } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException occured", e);
-        } catch (IOException e) {
-            log.error("IOException occured", e);
-        } catch (ParseException e) {
-            log.error("ParseException occured", e);
-        }
     }
 
     /**
-     * @param elementName
-     *            name of the element in the Json repository
+     * @param elementName name of the element in the Json repository
      * @return the element from <i>elementName</i>
      */
     public Element getElementFromJson(String elementName) {
@@ -63,31 +42,27 @@ public class JSONElementReader {
         Object jsonObjTemp = jsonObject.get(elementName);
         if (jsonObjTemp == null) {
             log.error("Object {} not found", elementName);
-            return null;
+            throw new IllegalArgumentException("Element '" + elementName + "' Not found ");
         }
         String temp = null;
         String name = elementName;
-        temp = ((JSONObject) jsonObjTemp).get("selectorType")
-                + Constants.EMPTY_STRING;
+        temp = ((JSONObject) jsonObjTemp).get("selectorType") + Constants.EMPTY_STRING;
         if (temp == null || (temp != null && temp.isEmpty())) {
             log.error("Selector type not found for {}", elementName);
             return null;
         }
         String selectorType = temp;
-
-        temp = ((JSONObject) jsonObjTemp).get("selectorValue")
-                + Constants.EMPTY_STRING;
+        temp = ((JSONObject) jsonObjTemp).get("selectorValue") + Constants.EMPTY_STRING;
         if (temp == null || (temp != null && temp.isEmpty())) {
             log.error("Selector value not found for {}", elementName);
             return null;
         }
         String selectorValue = temp;
 
-        temp = ((JSONObject) jsonObjTemp).get("timeout")
-                + Constants.EMPTY_STRING;
+        temp = ((JSONObject) jsonObjTemp).get("timeout") + Constants.EMPTY_STRING;
 
-        long timeout = (temp == null || (temp != null && "null"
-                .equalsIgnoreCase(temp))) ? Element.DEFAULT_TIMEOUT_IN_MILLISECONDS
+        long timeout = (temp == null || (temp != null && "null".equalsIgnoreCase(temp)))
+                ? Interactions.DEFAULT_TIMEOUT_IN_MILLISECONDS
                 : Long.valueOf(temp + Constants.EMPTY_STRING);
         if (param != null) {
             selectorValue = String.format(selectorValue, param);
